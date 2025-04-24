@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🌦️ Weather Forecast App
+A modern weather forecast application built with Next.js (TypeScript) for the frontend and Laravel (API-only) for the backend. It integrates with the OpenWeatherMap API to fetch real-time weather data, displaying current conditions and multi-day forecasts in a sleek and responsive UI designed with RippleUI and Tailwind CSS.
 
-## Getting Started
+🚀 Features
+📍 Real-Time Weather Data
+Displays current weather conditions (temperature, humidity, wind, etc.) based on location.
 
-First, run the development server:
+📆 Multi-Day Forecasts
+See upcoming weather for the next several days with clear visuals.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+📱 Responsive Design
+Optimized for desktop, tablet, and mobile screens using Tailwind CSS + RippleUI components.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+⚙️ API-First Architecture
+Clean separation of concerns with a Laravel-powered backend API.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🌐 OpenWeatherMap Integration
+Powered by one of the most trusted sources for global weather data.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🛠️ Tech Stack
+Frontend (Next.js + TypeScript)
+Framework: Next.js
 
-## Learn More
+Language: TypeScript
 
-To learn more about Next.js, take a look at the following resources:
+Styling: Tailwind CSS + RippleUI
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+HTTP Client: Axios or Fetch API
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Backend (Laravel API-only)
+Framework: Laravel
 
-## Deploy on Vercel
+Authentication (optional): Sanctum / Passport
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Weather Service: OpenWeatherMap API
