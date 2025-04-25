@@ -17,7 +17,7 @@ const SearchBar = ({ onSearch }: Props) => {
   };
 
   return (
-    <div className="flex justify-center mt-6">
+    <div className="flex justify-center mt-6 w-full">
       <div className="relative w-full max-w-md flex items-center">
         <input
           type="text"
@@ -30,7 +30,6 @@ const SearchBar = ({ onSearch }: Props) => {
         <button onClick={handleSearch} className="text-black">
           Go
         </button>
-        {/* <button className="btn btn-outline-primary">Default</button> */}
       </div>
     </div>
   );

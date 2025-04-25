@@ -1,77 +1,133 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import SearchBar from "./components/SearchBar";
 import ForecastCard from "./components/ForecastCard";
 import WeatherStatCard from "./components/WeatherStatCard";
 
 export default function Home() {
-  const [city, setCity] = useState("");
-  const [isCelsius, setIsCelsius] = useState(true); // State for the switch (Celsius or Fahrenheit)
+  const [weatherData, setWeatherData] = useState<any>(null);
+  const [isCelsius, setIsCelsius] = useState(true);
+  const [locationError, setLocationError] = useState<string | null>(null);
+
+  const getTemperature = (temp: number) => {
+    return isCelsius
+      ? `${Math.round(temp)}°C`
+      : `${Math.round(temp * 1.8 + 32)}°F`;
+  };
 
   const handleSearch = async (searchCity: string) => {
     try {
       const res = await fetch(
         `http://127.0.0.1:8000/api/weather?city=${searchCity}`
       );
+      if (!res.ok) {
+        const error = await res.text();
+        throw new Error(error);
+      }
       const data = await res.json();
-      setCity(data);
-      console.log(data); // you’ll parse this and feed into your components
+      setWeatherData(data);
+      console.log(data);
     } catch (err) {
       console.error("Error fetching weather:", err);
     }
   };
 
+  // Use IP-based geolocation to fetch city
+  useEffect(() => {
+    const getLocationFromIP = async () => {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        if (!res.ok) {
+          throw new Error("Failed to fetch IP location.");
+        }
+        const data = await res.json();
+        const city = data.city;
+
+        if (city) {
+          handleSearch(city);
+        } else {
+          setLocationError("Could not detect your city.");
+        }
+      } catch (error) {
+        console.error(error);
+        setLocationError("Location detection failed.");
+      }
+    };
+
+    getLocationFromIP();
+  }, []);
+
   return (
-    <main className="flex bg-gradient-to-b from-blue-100 to-white">
+    <main className="flex bg-gradient-to-b from-blue-100 to-white min-h-screen">
       {/* Sidebar */}
       <Sidebar
         icon={
-          <img
-            src="https://openweathermap.org/img/wn/10d.png"
-            alt="weather icon"
-          />
+          weatherData?.current?.icon ? (
+            <img
+              src={`https://openweathermap.org/img/wn/${weatherData.current.icon}@2x.png`}
+              alt="weather icon"
+              className="w-16 h-16"
+            />
+          ) : (
+            <div className="w-16 h-16 bg-gray-200 rounded-full animate-pulse" />
+          )
         }
-        temperature="22°C" // Replace with dynamic temperature
-        condition="Cloudy"
-        date="April 24, 2025"
-        location={city || "Enter a city"}
+        temperature={
+          weatherData ? getTemperature(weatherData.current.temperature) : "--"
+        }
+        condition={weatherData?.current?.description || "Loading..."}
+        date={weatherData?.current?.date || "Loading..."}
+        location={
+          locationError
+            ? locationError
+            : weatherData?.city
+            ? `${weatherData.city}, ${weatherData.country}`
+            : "Fetching location..."
+        }
       />
 
       {/* Main Content */}
       <div className="flex-1 p-6 space-y-6">
-        {/* Search Bar and Switch */}
+        {/* Search Bar and Unit Switch */}
         <div className="flex justify-between items-center mb-8">
           <SearchBar onSearch={handleSearch} />
-
-          {/* Switch for Celsius/Fahrenheit */}
           <label className="inline-flex items-center cursor-pointer">
             <input
               type="checkbox"
-              value=""
               className="sr-only peer"
               checked={isCelsius}
               onChange={() => setIsCelsius((prev) => !prev)}
             />
-            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
-            <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+            <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
+            <span className="ms-3 text-sm font-medium text-gray-900">
               {isCelsius ? "°C" : "°F"}
             </span>
           </label>
         </div>
 
         {/* Forecast Cards */}
-        <div className="flex space-x-4">
-          <ForecastCard date="Apr 25" icon="04d" tempMin={18} tempMax={24} />
-          <ForecastCard date="Apr 26" icon="10d" tempMin={19} tempMax={25} />
-          <ForecastCard date="Apr 27" icon="01d" tempMin={20} tempMax={26} />
+        <div className="flex justify-center space-x-4 flex-wrap">
+          {weatherData?.forecast?.map((day: any, index: number) => (
+            <ForecastCard
+              key={index}
+              date={day.date}
+              icon={day.icon}
+              tempMin={getTemperature(day.min_temp)}
+              tempMax={getTemperature(day.max_temp)}
+            />
+          ))}
         </div>
 
         {/* Weather Stat Cards */}
-        <div className="flex space-x-4 mt-6">
-          <WeatherStatCard wind={15} />
-          <WeatherStatCard humidity={75} />
+        <div className="flex justify-center space-x-4 mt-6 flex-wrap">
+          {weatherData && (
+            <>
+              <WeatherStatCard wind={weatherData.current.wind_speed} />
+              <WeatherStatCard humidity={weatherData.current.humidity} />
+            </>
+          )}
         </div>
       </div>
     </main>

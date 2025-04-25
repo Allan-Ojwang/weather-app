@@ -3,8 +3,8 @@
 type Props = {
   date: string;
   icon: string;
-  tempMin: number;
-  tempMax: number;
+  tempMin: string;
+  tempMax: string;
 };
 
 const ForecastCard = ({ date, icon, tempMin, tempMax }: Props) => {
