@@ -5,11 +5,13 @@ import Sidebar from "./components/Sidebar";
 import SearchBar from "./components/SearchBar";
 import ForecastCard from "./components/ForecastCard";
 import WeatherStatCard from "./components/WeatherStatCard";
+import LoadingScreen from "./components/LoadingScreen";
 
 export default function Home() {
   const [weatherData, setWeatherData] = useState<any>(null);
   const [isCelsius, setIsCelsius] = useState(true);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true); 
 
   const getTemperature = (temp: number) => {
     return isCelsius
@@ -28,36 +30,39 @@ export default function Home() {
       }
       const data = await res.json();
       setWeatherData(data);
-      console.log(data);
     } catch (err) {
       console.error("Error fetching weather:", err);
+    } finally {
+      setLoading(false); 
     }
   };
 
-  // Use IP-based geolocation to fetch city
   useEffect(() => {
     const getLocationFromIP = async () => {
       try {
         const res = await fetch("https://ipapi.co/json/");
-        if (!res.ok) {
-          throw new Error("Failed to fetch IP location.");
-        }
+        if (!res.ok) throw new Error("Failed to fetch IP location.");
         const data = await res.json();
         const city = data.city;
 
         if (city) {
-          handleSearch(city);
+          await handleSearch(city); 
         } else {
           setLocationError("Could not detect your city.");
+          setLoading(false);
         }
       } catch (error) {
         console.error(error);
         setLocationError("Location detection failed.");
+        setLoading(false);
       }
     };
 
     getLocationFromIP();
   }, []);
+
+  // Loading UI
+  if (loading) return <LoadingScreen />;
 
   return (
     <main className="flex bg-gradient-to-b from-blue-100 to-white min-h-screen">
