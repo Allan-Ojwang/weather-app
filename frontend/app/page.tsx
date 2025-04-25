@@ -68,7 +68,9 @@ export default function Home() {
         console.error(error);
         setLocationError("Location detection failed.");
         setLoading(false);
-        toast.error("Your location can not be detected. Cannot fetch weather report.");
+        toast.error(
+          "Your location can not be detected. Cannot fetch weather report."
+        );
       }
     };
 
@@ -129,14 +131,9 @@ export default function Home() {
           >
             <input
               type="checkbox"
-              className="sr-only peer"
+              className="switch switch-bordered-primary switch-lg"
               checked={isCelsius}
               onChange={() => setIsCelsius((prev) => !prev)}
-            />
-            <motion.div
-              className="relative w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"
-              layout
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
             />
             <span className="ms-3 text-sm font-medium text-gray-900">
               {isCelsius ? "°C" : "°F"}

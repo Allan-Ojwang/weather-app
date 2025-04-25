@@ -19,9 +19,9 @@ Below is the gif of the project.
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file in the backend
+Create a `.env` file in the backend directory with the following content:
 
-`OPENWEATHERMAP_API_KEY`
+`OPENWEATHERMAP_API_KEY` = "your_api_key_here"
 
 
 
@@ -36,7 +36,7 @@ Clone the project
 Go to the project directory
 
 ```bash
-  cd weather-app
+  cd frontend
 ```
 
 Install dependencies
@@ -54,7 +54,14 @@ Start the server
 Open another terminal
 
 ```bash
+  cd backend
   cd weather-api
+```
+
+Install dependencies
+
+```bash
+  composer install
 ```
 
 Start the server

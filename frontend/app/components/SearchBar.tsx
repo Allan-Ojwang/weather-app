@@ -25,15 +25,19 @@ const SearchBar = ({ onSearch }: Props) => {
       <div className="relative w-full max-w-md flex items-center">
         <input
           type="text"
-          className="mr-4 w-full border border-gray-400 rounded-full py-2 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="input input-primary"
           placeholder="Search for a city..."
           value={city}
           onChange={(e) => setCity(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
-        <button onClick={handleSearch} className="text-black">
-          <Search />
-        </button>
+        <div className="ml-4">
+          {" "}
+          {/* Add margin to the left of the button */}
+          <button onClick={handleSearch} className="btn btn-primary">
+            <Search />
+          </button>
+        </div>
       </div>
     </div>
   );
