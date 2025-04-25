@@ -17,18 +17,18 @@ const SearchBar = ({ onSearch }: Props) => {
   };
 
   return (
-    <div className="flex justify-center mt-6 w-full">
+    <div className="flex justify-center mt-2 w-full">
       <div className="relative w-full max-w-md flex items-center">
         <input
           type="text"
-          className="mr-4 w-full border border-gray-300 rounded-full py-2 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="mr-4 w-full border border-gray-400 rounded-full py-2 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Search for a city..."
           value={city}
           onChange={(e) => setCity(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
         <button onClick={handleSearch} className="text-black">
-          Go
+          🔎
         </button>
       </div>
     </div>

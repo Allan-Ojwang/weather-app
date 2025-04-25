@@ -15,9 +15,9 @@ const WeatherStatCard = ({ wind, humidity }: Props) => {
 
   return (
     <div className="card bg-white shadow-sm p-10 rounded-lg text-center w-[300px]">
-      <p className="text-2xl font-medium mb-6">{label}</p>
+      <p className="text-2xl font-medium">{label}</p>
       <p className="text-3xl font-bold text-black my-6">{value}</p>
-      <Icon className={`mx-auto h-10 w-10 ${iconColor}`} />
+      <Icon className={`mx-auto h-15 w-15 ${iconColor}`} />
     </div>
   );
 };

@@ -5,13 +5,19 @@ import Sidebar from "./components/Sidebar";
 import SearchBar from "./components/SearchBar";
 import ForecastCard from "./components/ForecastCard";
 import WeatherStatCard from "./components/WeatherStatCard";
-import LoadingScreen from "./components/LoadingScreen";
+import dynamic from "next/dynamic";
+import toast from "react-hot-toast";
+
+const LoadingScreen = dynamic(() => import("./components/LoadingScreen"), {
+  ssr: false,
+});
 
 export default function Home() {
   const [weatherData, setWeatherData] = useState<any>(null);
   const [isCelsius, setIsCelsius] = useState(true);
   const [locationError, setLocationError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   const getTemperature = (temp: number) => {
     return isCelsius
@@ -20,20 +26,29 @@ export default function Home() {
   };
 
   const handleSearch = async (searchCity: string) => {
+    setLoading(true);
+    setSearchError(null);
     try {
       const res = await fetch(
         `http://127.0.0.1:8000/api/weather?city=${searchCity}`
       );
       if (!res.ok) {
         const error = await res.text();
-        throw new Error(error);
+        throw new Error(error || "Location not found.");
       }
       const data = await res.json();
+
+      if (!data || !data.current) {
+        throw new Error("Invalid weather data received.");
+      }
+
       setWeatherData(data);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error fetching weather:", err);
+      setSearchError(err.message || "Something went wrong.");
+      toast.error("Location not found. Enter valid city.");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -46,7 +61,7 @@ export default function Home() {
         const city = data.city;
 
         if (city) {
-          await handleSearch(city); 
+          await handleSearch(city);
         } else {
           setLocationError("Could not detect your city.");
           setLoading(false);
@@ -55,6 +70,7 @@ export default function Home() {
         console.error(error);
         setLocationError("Location detection failed.");
         setLoading(false);
+        toast.error("Your location can not be detected. Cannot fetch weather report.");
       }
     };
 
@@ -96,7 +112,7 @@ export default function Home() {
       {/* Main Content */}
       <div className="flex-1 p-6 space-y-6">
         {/* Search Bar and Unit Switch */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center">
           <SearchBar onSearch={handleSearch} />
           <label className="inline-flex items-center cursor-pointer">
             <input
@@ -105,7 +121,7 @@ export default function Home() {
               checked={isCelsius}
               onChange={() => setIsCelsius((prev) => !prev)}
             />
-            <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
+            <div className="relative w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
             <span className="ms-3 text-sm font-medium text-gray-900">
               {isCelsius ? "°C" : "°F"}
             </span>
