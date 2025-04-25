@@ -1,103 +1,79 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import Sidebar from "./components/Sidebar";
+import SearchBar from "./components/SearchBar";
+import ForecastCard from "./components/ForecastCard";
+import WeatherStatCard from "./components/WeatherStatCard";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [city, setCity] = useState("");
+  const [isCelsius, setIsCelsius] = useState(true); // State for the switch (Celsius or Fahrenheit)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const handleSearch = async (searchCity: string) => {
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/weather?city=${searchCity}`
+      );
+      const data = await res.json();
+      setCity(data);
+      console.log(data); // you’ll parse this and feed into your components
+    } catch (err) {
+      console.error("Error fetching weather:", err);
+    }
+  };
+
+  return (
+    <main className="flex bg-gradient-to-b from-blue-100 to-white">
+      {/* Sidebar */}
+      <Sidebar
+        icon={
+          <img
+            src="https://openweathermap.org/img/wn/10d.png"
+            alt="weather icon"
+          />
+        }
+        temperature="22°C" // Replace with dynamic temperature
+        condition="Cloudy"
+        date="April 24, 2025"
+        location={city || "Enter a city"}
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 p-6 space-y-6">
+        {/* Search Bar and Switch */}
+        <div className="flex justify-between items-center mb-8">
+          <SearchBar onSearch={handleSearch} />
+
+          {/* Switch for Celsius/Fahrenheit */}
+          <label className="inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              value=""
+              className="sr-only peer"
+              checked={isCelsius}
+              onChange={() => setIsCelsius((prev) => !prev)}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+            <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+              {isCelsius ? "°C" : "°F"}
+            </span>
+          </label>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        {/* Forecast Cards */}
+        <div className="flex space-x-4">
+          <ForecastCard date="Apr 25" icon="04d" tempMin={18} tempMax={24} />
+          <ForecastCard date="Apr 26" icon="10d" tempMin={19} tempMax={25} />
+          <ForecastCard date="Apr 27" icon="01d" tempMin={20} tempMax={26} />
+        </div>
+
+        {/* Weather Stat Cards */}
+        <div className="flex space-x-4 mt-6">
+          <WeatherStatCard wind={15} />
+          <WeatherStatCard humidity={75} />
+        </div>
+      </div>
+    </main>
   );
 }
