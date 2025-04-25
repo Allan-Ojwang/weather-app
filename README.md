@@ -51,7 +51,7 @@ Start the server
   npm run dev
 ```
 
-Opem amother terminal
+Open another terminal
 
 ```bash
   cd weather-api
