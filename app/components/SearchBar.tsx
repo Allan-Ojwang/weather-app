@@ -28,7 +28,7 @@ const SearchBar = ({ onSearch }: Props) => {
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
         <button onClick={handleSearch} className="text-black">
-          🔎
+          <Search/>
         </button>
       </div>
     </div>
