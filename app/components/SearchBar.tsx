@@ -2,6 +2,7 @@
 
 import { Search } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 type Props = {
   onSearch: (city: string) => void;
@@ -11,9 +12,12 @@ const SearchBar = ({ onSearch }: Props) => {
   const [city, setCity] = useState("");
 
   const handleSearch = () => {
-    if (city.trim() !== "") {
-      onSearch(city.trim());
+    const trimmedCity = city.trim();
+    if (trimmedCity === "") {
+      toast.error("Please enter a city name.");
+      return;
     }
+    onSearch(trimmedCity);
   };
 
   return (
@@ -28,7 +32,7 @@ const SearchBar = ({ onSearch }: Props) => {
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
         <button onClick={handleSearch} className="text-black">
-          <Search/>
+          <Search />
         </button>
       </div>
     </div>
