@@ -63,6 +63,11 @@ Install dependencies
 ```bash
   composer install
 ```
+Generate application key (After creating .env and adding your api key)
+
+```bash
+  php artisan key:generate
+```
 
 Start the server
 
